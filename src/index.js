@@ -11,4 +11,3 @@ const COMPONENTS = {
   error: error
 };
 export { COMPONENTS };
-

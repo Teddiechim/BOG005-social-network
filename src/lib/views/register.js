@@ -4,7 +4,6 @@ export default () => {
   const viewRegister = `
 
     <main class="registercontent">
-    
     <section id="contenedor">
     <article id="headerregister">
     <img src="/src/img/LOGO.png" alt="">
@@ -32,8 +31,6 @@ export default () => {
           </section>
         </figure>
         </section>
-
-
     </section>
     </main>`;
   registerSection.innerHTML = viewRegister;
