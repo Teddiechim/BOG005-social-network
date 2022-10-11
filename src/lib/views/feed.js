@@ -1,5 +1,7 @@
 import { signOutUser, getUser } from "../../auth.js";
 import { subirImagenAlFirebase } from "../../storage.js";
+import { saveTask, getTasks } from "../../firestore.js";
+
 
 export default () => {
   const feedSection = document.createElement("div");
@@ -23,14 +25,8 @@ export default () => {
 </ul>
 </div>
 
-
-
 </nav>
 </header>
-
-
-
-
 
 <h2>AQUI VAN LOS POST</h2>
 <input type="file" class="btn-modal">
@@ -44,27 +40,23 @@ export default () => {
                   
                   <div class="col s12 m6 registro-formulario">
                   <div class="input-field">
-                      <input id="tituloNewPost" type="text" maxlength="30" data-length="30" required />
-                      <label for="tituloNewPost">Titulo</label>
-                  </div>
-                  <div class="input-field">
-                      <textarea id="descripcionNewPost" type="text"  maxlength="200" data-length="200" class="materialize-textarea" required></textarea>
-                      <label for="descripcionNewPost">Comentarios</label>
+
+                  <form id="task-form">
+                  
+                  <label for="tituloNewPost">Titulo:</label>
+                  <input id="tituloNewPost" type="text" maxlength="30" data-length="30" required />
+                      
+                  <label for="descripcionNewPost">Descripción:</label>    
+                  <textarea id="descripcionNewPost" type="text" placeholder="Escribe tus comentarios" maxlength="200" data-length="200" class="materialize-textarea" required></textarea>
+                      
+                  <button class="btnUploadImage" id="btn-task-save">Guardar</button>
+
                       </div>
 
-                      <div class="progress-panel">
-                      <form class="form-imagenes">
-                          <label for="btnUploadFile" class="btn btn-file">
-                          <input type="file" value="" id="fichero" name="fichero" class="hidden">
-                         
-                          </label>
+                      </form>
 
-                          <div class="btnUpload">
-                          <button class="btnUploadImage">Subir Archivo</button>
+             <div id="tasks-container" class="tasks-container">
                           </div>
-                          </form>
-
-
 
                           
                           
@@ -76,7 +68,6 @@ export default () => {
                   </div>
   </div>
 </div>
-
 
 </section>
 `;
@@ -114,12 +105,7 @@ export default () => {
     signOutUser();
   });
 
-  // const holaButton = feedSection.querySelector(".prueba");
-  // holaButton.addEventListener("click", (e) => {
-  //   getUser();
-  // });
-window.onload = imageUp;
-//Boton subir archivo
+
 function imageUp () {
 const inputUp = feedSection.querySelector("#fichero");
 inputUp.addEventListener("change", subirImagenAlFirebase, false)
@@ -127,5 +113,49 @@ storageRef = firebase.storage().ref();
 
 }
 
+const taskForm = feedSection.querySelector("#task-form");
+
+
+// EVENTO PARA QUE EL FORMULARIO SEA ENVIADO
+// añadir un evento (submit) que cuando lo ejecute reciba un evento (e) y con este que me cancele el evento por defecto o que se refresque la pagina
+taskForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+// traer los inputs del titulo y la descripcion
+  const title = taskForm['tituloNewPost']
+  const description = taskForm['descripcionNewPost']
+
+
+  saveTask(title.value, description.value)
+
+  taskForm.reset()
+})
+
+const tasksContainer = feedSection.querySelector(".tasks-container");
+
+// querySnapshot son los datos que existen en este momento
+window.addEventListener('DOMContentLoaded', async () => {
+  const querySnapshot = await getTasks();
+  
+  let html = ''
+
+  // le pido que recorra los documentos y por c/u quiero verlos en consola
+  querySnapshot.forEach(doc => {
+    const task = doc.data()
+    html = `
+            <div>
+                <h3>${task.title}</h3>
+                <p>${task.description}</p>
+            </div>                         
+            ` 
+  })
+
+  feedSection.tasksContainer.innerHTML = html;
+})
+
+
   return feedSection;
 };
+
+
+

@@ -10,3 +10,8 @@ const init = () => {
   });
 };
 window.addEventListener("load", init);
+
+// Evento que arranca la aplicacion
+// window.addEventListener("DOMContentLoaded", () => {});
+
+

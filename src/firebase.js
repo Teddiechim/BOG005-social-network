@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-app.js";
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyDv4t5W45x0umMXRmpEyYl_XRZtzBuVFDI",
   authDomain: "social-network-10f19.firebaseapp.com",
@@ -11,3 +12,4 @@ const firebaseConfig = {
 };
 
 export const app = initializeApp(firebaseConfig);
+
