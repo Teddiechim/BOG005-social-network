@@ -6,3 +6,5 @@ import { auth } from "./auth.js";
 import { app } from "./firebase.js";
 
 const storage = getStorage(app);
+
+function uploadImage() {}
