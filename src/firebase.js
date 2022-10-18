@@ -8,6 +8,7 @@ const firebaseConfig = {
   messagingSenderId: "646586629684",
   appId: "1:646586629684:web:7fcdb5cf53ecabfdf21461",
   measurementId: "G-NNTW1WDDDP",
+  storageBucket: "gs://social-network-10f19.appspot.com",
 };
 
 export const app = initializeApp(firebaseConfig);
