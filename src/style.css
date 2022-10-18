@@ -935,12 +935,17 @@ a {
   height: 19px;
 }
 
-.likeImg {
-  width: 25px;
+.hide {
   display: none;
+}
+
+.likeImg {
+  width: 27px;
+  cursor: pointer;
 }
 .unlikeImg {
   width: 27px;
+  cursor: pointer;
 }
 .otherIcons {
   font-size: 22px;
