@@ -290,10 +290,11 @@ export default () => {
         const description = formData.get("newPostText");
 
         if (editStatus) {
-          updatePost(id, {
+          await updatePost(id, {
             title: title,
             description: description,
           });
+          showPostsOnFeed();
         } else {
           await saveDataPosts(title, description);
           showPostsOnFeed();
