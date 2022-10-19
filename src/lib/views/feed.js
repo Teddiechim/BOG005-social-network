@@ -279,11 +279,11 @@ export default () => {
       const btnsDelete = feedSection.querySelectorAll(".delete");
       btnsDelete.forEach((btn) => {
         btn.addEventListener("click", (event) => {
-          deletePost(event.target.dataset.id).then(() => location.reload());
+          deletePost(event.target.dataset.id).then(() => showPostsOnFeed());
         });
       });
 
-      formModal.addEventListener("submit", (e) => {
+      formModal.addEventListener("submit", async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const title = formData.get("newPostTitle");
@@ -295,7 +295,8 @@ export default () => {
             description: description,
           });
         } else {
-          saveDataPosts(title, description);
+          await saveDataPosts(title, description);
+          showPostsOnFeed();
           editStatus = false;
         }
         cerrar.click();
