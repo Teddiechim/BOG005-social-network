@@ -305,8 +305,8 @@ export default () => {
 
   showPostsOnFeed();
 
-  const submitButton = feedSection.querySelector(".btnUploadImage");
-  submitButton.addEventListener("click", showPostsOnFeed);
+  // const submitButton = feedSection.querySelector(".btnUploadImage");
+  // submitButton.addEventListener("click", showPostsOnFeed);
 
   return feedSection;
 };
