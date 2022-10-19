@@ -157,11 +157,10 @@ export default () => {
     let documents = [];
     getPosts().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        let post = doc.data();
-        post.id = doc.id;
-        post.uid = auth.currentUser.uid;
-        documents.push(post);
-        console.log(documents);
+        documents.push({
+          ...doc.data(),
+          id: doc.id,
+        });
       });
       let everyPosts = "";
       for (let i = 0; i < documents.length; i++) {
@@ -257,7 +256,6 @@ export default () => {
       // ----------------EDITAR Y ELIMINAR------------------
 
       const buttonEdit = feedSection.querySelectorAll(".btn-edit");
-      console.log(buttonEdit);
 
       buttonEdit.forEach((btn) => {
         btn.addEventListener("click", async (e) => {
