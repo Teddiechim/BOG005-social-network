@@ -159,18 +159,23 @@ export default () => {
 
     getPosts().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        let post = doc.data();
-        post.id = doc.id;
-        post.uid = auth.currentUser.uid;
-        documents.push(post);
-        console.log(post);
+        documents.push({
+          data: doc.data(),
+          id: doc.id,
+          uid: auth.currentUser.uid,
+        })
+      //   let post = doc.data();
+      //   post.id = doc.id;
+      //   post.uid = auth.currentUser.uid;
+      //   documents.push(post);
+        console.log(documents);
       });
       let everyPosts = "";
       for (let i = 0; i < documents.length; i++) {
         const idUsers = documents[i].likes ?? [];
         const idPost = documents[i].id ?? [];
-        const idUser = documents[i].uid ?? [];
-console.log('post:', idPost, 'user:', idUser, idUsers);
+        const idUser = documents[i].data.uid ?? [];
+console.log('post:', idUser);
         everyPosts =
           everyPosts +
           `<div class="post">
@@ -185,7 +190,7 @@ console.log('post:', idPost, 'user:', idUser, idUsers);
               <h1 class="nameUser">María</h1>
            </div>
            <div class="postText">
-               <h2>${documents[i].title}</h2>
+               <h2>${documents[i].data.title}</h2>
                <figure class="postImgC">
                 <img
                  alt="Foto del usuario"
@@ -193,7 +198,7 @@ console.log('post:', idPost, 'user:', idUser, idUsers);
                  src="img/dany.webp"
                 />
                </figure>
-               <p>${documents[i].description}</p>
+               <p>${documents[i].data.description}</p>
            </div>
           <div class="postIcons">
            <div class="like">
@@ -215,16 +220,17 @@ console.log('post:', idPost, 'user:', idUser, idUsers);
            </div>
            <div class="otherIcons">
            <buttom><i data-id="${idPost}" class="${
-            idPost == auth.currentUser.uid ? "fi btn-edit fi-rr-pencil" : ""
+            idUser == auth.currentUser.uid ? "fi btn-edit fi-rr-pencil" : ""
           }" ></i></buttom>
           <i class="${
-            idPost == auth.currentUser.uid ? "fi fi-rs-trash delete" : ""
+            idUser == auth.currentUser.uid ? "fi fi-rs-trash delete" : ""
           }" id="btn-delete" data-id="${idPost}"></i>
             
            </div>
           </div>
       </div>`;
-      }
+
+      } 
       feedSection.querySelector(".postsContainer").innerHTML = everyPosts;
 
       // ------------LIKE POSTS-------------
