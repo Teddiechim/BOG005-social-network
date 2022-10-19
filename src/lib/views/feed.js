@@ -163,14 +163,14 @@ export default () => {
         post.id = doc.id;
         post.uid = auth.currentUser.uid;
         documents.push(post);
-        console.log(documents);
+        console.log(post);
       });
       let everyPosts = "";
       for (let i = 0; i < documents.length; i++) {
         const idUsers = documents[i].likes ?? [];
         const idPost = documents[i].id ?? [];
         const idUser = documents[i].uid ?? [];
-
+console.log('post:', idPost, 'user:', idUser, idUsers);
         everyPosts =
           everyPosts +
           `<div class="post">
@@ -215,10 +215,10 @@ export default () => {
            </div>
            <div class="otherIcons">
            <buttom><i data-id="${idPost}" class="${
-            idUser == auth.currentUser.uid ? "fi btn-edit fi-rr-pencil" : ""
+            idPost == auth.currentUser.uid ? "fi btn-edit fi-rr-pencil" : ""
           }" ></i></buttom>
           <i class="${
-            idUser == auth.currentUser.uid ? "fi fi-rs-trash delete" : ""
+            idPost == auth.currentUser.uid ? "fi fi-rs-trash delete" : ""
           }" id="btn-delete" data-id="${idPost}"></i>
             
            </div>
