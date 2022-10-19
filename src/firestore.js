@@ -11,6 +11,7 @@ import {
   updateDoc,
   getDoc,
   deleteDoc,
+  where,
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-firestore.js";
 import { auth } from "./auth.js";
 import { app } from "./firebase.js";
@@ -29,6 +30,7 @@ export async function saveData(email, password, name) {
       name: name,
       email: email,
       password: password,
+      id: auth.currentUser.uid,
     });
 
     console.log("Document written with ID: ", docRef.id);
@@ -39,6 +41,14 @@ export async function saveData(email, password, name) {
 }
 
 export async function saveDataPosts(title, description) {
+  let author;
+  if (auth.currentUser.displayName) {
+    author = auth.currentUser.displayName;
+  } else {
+    const id = auth.currentUser.uid;
+    const user = await getUser(id);
+    author = user[0].name;
+  }
   try {
     const docRef = await addDoc(collection(db, "posts"), {
       title: title,
@@ -46,6 +56,7 @@ export async function saveDataPosts(title, description) {
       date: new Date(),
       likes: [],
       uid: auth.currentUser.uid,
+      author: author,
     });
 
     console.log("Document written with ID: ", docRef.id);
@@ -58,6 +69,16 @@ export async function saveDataPosts(title, description) {
 export function getPosts() {
   const q = query(collection(db, "posts"), orderBy("date", "desc"));
   return getDocs(q);
+}
+
+export async function getUser(id) {
+  const q = query(collection(db, "usuarios"), where("id", "==", id));
+  const querySnapshot = await getDocs(q);
+  let data = [];
+  querySnapshot.forEach((doc) => {
+    data.push(doc.data());
+  });
+  return data;
 }
 
 export async function addLike(postId) {

@@ -154,9 +154,7 @@ export default () => {
   // });
 
   function showPostsOnFeed() {
-    // Guardamos los datos de los posts en una variable
     let documents = [];
-
     getPosts().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         let post = doc.data();
@@ -182,7 +180,7 @@ export default () => {
                  src="img/dany.webp"
                 />
               </figure>
-              <h1 class="nameUser">María</h1>
+              <h1 class="nameUser">${documents[i].author}</h1>
            </div>
            <div class="postText">
                <h2>${documents[i].title}</h2>
@@ -307,7 +305,6 @@ export default () => {
 
   showPostsOnFeed();
 
-  // Ponemos un evento al botón de "subir archivo"
   const submitButton = feedSection.querySelector(".btnUploadImage");
   submitButton.addEventListener("click", showPostsOnFeed);
 
