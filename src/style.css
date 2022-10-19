@@ -953,6 +953,7 @@ a {
   align-items: center;
   color: #b451c5;
   gap: 5px;
+  cursor: pointer;
 }
 
 @media (min-width: 900px) {
