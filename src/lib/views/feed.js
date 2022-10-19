@@ -36,7 +36,7 @@ export default () => {
                 <img
                  alt="Foto del usuario"
                  class="imgUserNav"
-                 src="img/dany.webp"
+                 src="img/heart.jpg"
                 />
             </figure>
           </div>
@@ -53,9 +53,10 @@ export default () => {
         <p class="close">X</p>
         <form class="modal-textos">
           <h2>Realiza una publicación</h2>
-          <p class="modal-textos-2">Publica un video, imagen o comentario</p>
-          <div class="col s12 m6 registro-formulario">
+          <p class="modal-textos-2">Publica un comentario</p>
+          <div class="registro-formulario">
             <div class="input-field">
+            <label for="tituloNewPost">Título</label><br>
               <input
                 id="tituloNewPost"
                 name="newPostTitle"
@@ -64,9 +65,10 @@ export default () => {
                 data-length="30"
                 required
               />
-              <label for="tituloNewPost">Titulo</label>
+              
             </div>
             <div class="input-field">
+            <label for="descripcionNewPost">Comentarios</label><br>
               <textarea
                 id="descripcionNewPost"
                 name="newPostText"
@@ -76,23 +78,15 @@ export default () => {
                 class="materialize-textarea"
                 required
               ></textarea>
-              <label for="descripcionNewPost">Comentarios</label>
+              
             </div>
 
             <div class="progress-panel">
               <form class="form-imagenes">
-                <label for="btnUploadFile" class="btn btn-file">
-                  <input
-                    type="file"
-                    value=""
-                    id="fichero"
-                    name="fichero"
-                    class="hidden"
-                  />
-                </label>
+                
 
                 <div class="btnUpload">
-                  <button type="submit" class="btnUploadImage" id="btnUploadImage">Subir Archivo</button>
+                  <button type="submit" class="btnUploadImage" id="btnUploadImage">Publicar</button>
                 </div>
               </form>
 
@@ -129,7 +123,7 @@ export default () => {
     modal.style.display = "block";
     formModal["tituloNewPost"].value = "";
     formModal["descripcionNewPost"].value = "";
-    formModal["btnUploadImage"].innerHTML = "Up";
+    formModal["btnUploadImage"].innerHTML = "Publicar";
   });
 
   cerrar.addEventListener("click", () => {
@@ -176,20 +170,14 @@ export default () => {
                 <img
                  alt="Foto del usuario"
                  class="ImgU"
-                 src="img/dany.webp"
+                 src="img/heart.jpg"
                 />
               </figure>
               <h1 class="nameUser">${documents[i].author}</h1>
            </div>
            <div class="postText">
                <h2>${documents[i].title}</h2>
-               <figure class="postImgC">
-                <img
-                 alt="Foto del usuario"
-                 class="postImg"
-                 src="img/dany.webp"
-                />
-               </figure>
+               
                <p>${documents[i].description}</p>
            </div>
           <div class="postIcons">

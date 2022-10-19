@@ -295,6 +295,10 @@ a {
 
 /*REGISTER*/
 
+.registerTitle {
+  font-family: "Manjari";
+}
+
 .submitContainer {
   display: flex;
   justify-content: center;
@@ -371,6 +375,7 @@ a {
   width: fit-content;
   margin: 2vh auto;
   position: relative;
+  font-family: "Manjari";
 }
 
 .registerContent a::after {
@@ -511,7 +516,7 @@ a {
   }
 
   .singin button {
-    font-family: "Overpass", sans-serif;
+    font-family: "Manjarib", sans-serif;
     font-size: 1rem;
     color: #1b262c;
     width: 40%;
@@ -527,14 +532,14 @@ a {
   }
 
   .singin button:hover {
-    background-color: #3c4245;
+    background-color: #805185;
     color: #dfcdc3;
   }
 
   .registerContent a {
     text-align: center;
     color: white;
-    font-size: 2vh;
+    font-size: 3vh;
   }
 
   .registerContent .singin h1 {
@@ -609,6 +614,8 @@ a {
 .navbar-links {
   display: flex;
   flex-direction: row;
+  font-family: "Manjari";
+  margin-top: 5px;
 }
 
 #sectionFeed .navbar-links ul {
@@ -757,6 +764,41 @@ a {
   display: none;
 }
 
+.modal-textos > h2 {
+  font-family: "Manjari";
+  color: #805185;
+}
+.modal-textos {
+  height: 100%;
+}
+.modal-textos > p {
+  font-family: "Manjari";
+  font-size: 15px;
+  padding-top: 5px;
+}
+
+.registro-formulario {
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+#tituloNewPost {
+  width: 70%;
+  height: 30px;
+  border: #805185 1px solid;
+}
+
+#descripcionNewPost {
+  width: 70%;
+  height: 70px;
+  border: #805185 1px solid;
+  font-family: "Manjari";
+}
+
+.input-field > label {
+  font-family: "Manjari";
+}
 /* CHECKBOX */
 #sectionFeed .btn-modal {
   display: none;
@@ -766,11 +808,21 @@ a {
   display: flex;
 }
 
+.btnUploadImage {
+  font-family: "Manjari";
+  font-size: 20px;
+  color: #dbdbdb;
+  background-color: #805185;
+  padding: 10px;
+  height: fit-content;
+  border-radius: 5px;
+}
+
 /* ESTILOS DEL CONTENIDO DEL MODAL */
 #sectionFeed .modal {
   /* margin: 15% auto; */
   padding: 20px;
-  width: 40%;
+  width: 90%;
   height: 50%;
   background-color: white;
   text-align: center;
@@ -791,12 +843,6 @@ a {
   0% {
     transform: translate(-100%);
   }
-  /* 100% {
-    transform: translate(0);
-  }
-  50% {
-    transform: translate(30px);
-  } */
 }
 
 #sectionFeed .modal img {
@@ -835,9 +881,9 @@ a {
 
 /* RESPONSIVE MODAL */
 
-@media screen and (max-width: 80px) {
-  #sectionFeed .modal-container {
-    width: 90%;
+@media (min-width: 900px) {
+  #sectionFeed .modal {
+    width: 40%;
   }
 }
 
@@ -900,15 +946,6 @@ a {
 }
 .postText > p {
   font-family: Manjari;
-}
-.postImgC {
-  width: 100%;
-  height: auto;
-  padding: 5px 0px;
-}
-
-.postImg {
-  width: 100%;
 }
 
 .postIcons {
