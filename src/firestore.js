@@ -48,22 +48,20 @@ export async function saveDataPosts(title, description) {
     const id = auth.currentUser.uid;
     const user = await getUser(id);
     author = user[0].name;
+    photo = currentUser.photoURL;
   }
-  try {
-    const docRef = await addDoc(collection(db, "posts"), {
+    addDoc(collection(db, "posts"), {
       title: title,
       description: description,
       date: new Date(),
       likes: [],
       uid: auth.currentUser.uid,
       author: author,
+      photo: photo.URL
     });
 
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.log(e);
-    console.error("Error adding document: ", e);
-  }
+    // console.log("Document written with ID: ", docRef.id);
+
 }
 
 export function getPosts() {

@@ -11,8 +11,7 @@ import {
 } from "./../../firestore.js";
 
 export default () => {
-  let editStatus = false;
-  let id = "";
+
   const feedSection = document.createElement("div");
   feedSection.classList.add("feed");
 
@@ -36,7 +35,7 @@ export default () => {
                 <img
                  alt="Foto del usuario"
                  class="imgUserNav"
-                 src="img/heart.jpg"
+                 src="img/imagen-drama.png"
                 />
             </figure>
           </div>
@@ -52,8 +51,8 @@ export default () => {
          <div class="modal modal-close"> 
         <p class="close">X</p>
         <form class="modal-textos">
-          <h2>Realiza una publicación</h2>
-          <p class="modal-textos-2">Publica un comentario</p>
+          <h2 class="h2-title">Realiza una publicación</h2>
+          
           <div class="registro-formulario">
             <div class="input-field">
             <label for="tituloNewPost">Título</label><br>
@@ -101,6 +100,8 @@ export default () => {
 `;
 
   feedSection.innerHTML = viewFeed;
+  let everyPosts = "";
+  let editStatus = false;
 
   // MENU RESPONSIVE
   const toggleButton = feedSection.querySelector(".toggle-button");
@@ -115,6 +116,9 @@ export default () => {
   const abrir = feedSection.querySelector(".cta");
   const modal = feedSection.querySelector(".modal");
   const modalC = feedSection.querySelector(".modal-container");
+  const titleCommit = feedSection.querySelector('.h2-title')
+  
+
   // const formModal = feedSection.querySelector(".modal-textos");
 
   abrir.addEventListener("click", () => {
@@ -124,6 +128,9 @@ export default () => {
     formModal["tituloNewPost"].value = "";
     formModal["descripcionNewPost"].value = "";
     formModal["btnUploadImage"].innerHTML = "Publicar";
+    
+    editStatus = false;
+    everyPosts = "";
   });
 
   cerrar.addEventListener("click", () => {
@@ -146,8 +153,10 @@ export default () => {
   //   saveDataPosts(title, description);
   //   cerrar.click();
   // });
-
+  
   function showPostsOnFeed() {
+    
+    let id = "";
     let documents = [];
     getPosts().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
@@ -156,21 +165,22 @@ export default () => {
           id: doc.id,
         });
       });
-      let everyPosts = "";
+      console.log( documents);
+      everyPosts = "";
       for (let i = 0; i < documents.length; i++) {
         const idUsers = documents[i].likes ?? [];
         const idPost = documents[i].id ?? [];
         const idUser = documents[i].uid ?? [];
 
-        everyPosts =
-          everyPosts +
+        everyPosts +=
+          
           `<div class="post">
             <div class="headPost">
               <figure class="imgUser">
                 <img
                  alt="Foto del usuario"
                  class="ImgU"
-                 src="img/heart.jpg"
+                 src="img/imagen-drama.png"
                 />
               </figure>
               <h1 class="nameUser">${documents[i].author}</h1>
@@ -210,7 +220,9 @@ export default () => {
           </div>
       </div>`;
       }
-      feedSection.querySelector(".postsContainer").innerHTML = everyPosts;
+       const postContainer = feedSection.querySelector(".postsContainer")
+       postContainer.innerHTML = everyPosts;
+       
 
       // ------------LIKE POSTS-------------
 
@@ -260,6 +272,8 @@ export default () => {
           id = e.target.dataset.id;
           console.log("editSTATUS", editStatus);
           formModal["btnUploadImage"].innerText = "Update";
+          titleCommit.innerHTML= "Editar Publicación"
+          feedSection.querySelector('.modal-textos-2').innerHTML="Modifica"
         });
       });
       const btnsDelete = feedSection.querySelectorAll(".delete");
@@ -276,16 +290,18 @@ export default () => {
         const description = formData.get("newPostText");
 
         if (editStatus) {
-          await updatePost(id, {
+          updatePost(id, {
             title: title,
             description: description,
           });
+          editStatus = false;
           showPostsOnFeed();
         } else {
-          await saveDataPosts(title, description);
+          saveDataPosts(title, description);
           showPostsOnFeed();
-          editStatus = false;
+
         }
+
         cerrar.click();
       });
     });
