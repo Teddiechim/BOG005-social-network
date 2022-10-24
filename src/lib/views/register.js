@@ -47,7 +47,7 @@ export default () => {
               required
             />
           <div class= "submitContainer">
-          <button type="submit" title="enviar" name="SingIn">
+          <button type="submit" class="submitRegister" title="enviar" name="SingIn">
           Crear cuenta
         </button>
         </div>

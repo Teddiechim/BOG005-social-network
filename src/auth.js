@@ -19,6 +19,7 @@ export function registerWithEmail(email, password, name) {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
+
       saveData(email, password, name);
       window.location.hash = "";
     })
@@ -63,10 +64,6 @@ export function loginWithEmail(email, password) {
 export function signInWithGoogle() {
   signInWithPopup(auth, provider)
     .then((result) => {
-      // PRUEBA cargar foto de perfil de google al autenticarse.
-      //  $('#avatar').attr('src', result.user.photoURL)
-      // FIN PRUEBA
-
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential.accessToken;
       const user = result.user;

@@ -259,7 +259,7 @@ export default () => {
           editStatus = true;
           id = e.target.dataset.id;
           console.log("editSTATUS", editStatus);
-          formModal["btnUploadImage"].innerText = "Update";
+          formModal["btnUploadImage"].innerText = "Editar";
         });
       });
       const btnsDelete = feedSection.querySelectorAll(".delete");
@@ -280,7 +280,7 @@ export default () => {
             title: title,
             description: description,
           });
-          showPostsOnFeed();
+          // showPostsOnFeed();
         } else {
           await saveDataPosts(title, description);
           showPostsOnFeed();
