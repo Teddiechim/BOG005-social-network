@@ -48,7 +48,7 @@ export async function saveDataPosts(title, description) {
     const id = auth.currentUser.uid;
     const user = await getUser(id);
     author = user[0].name;
-    photo = currentUser.photoURL;
+
   }
     addDoc(collection(db, "posts"), {
       title: title,
@@ -57,7 +57,7 @@ export async function saveDataPosts(title, description) {
       likes: [],
       uid: auth.currentUser.uid,
       author: author,
-      photo: photo.URL
+
     });
 
     // console.log("Document written with ID: ", docRef.id);
