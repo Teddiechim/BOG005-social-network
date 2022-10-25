@@ -241,7 +241,7 @@ export default () => {
         }
       }
 
-      // ----------------EDITAR Y ELIMINAR------------------
+      // ----------------EDITAR------------------
 
       const buttonEdit = feedSection.querySelectorAll(".btn-edit");
 
@@ -260,12 +260,6 @@ export default () => {
           id = e.target.dataset.id;
           console.log("editSTATUS", editStatus);
           formModal["btnUploadImage"].innerText = "Editar";
-        });
-      });
-      const btnsDelete = feedSection.querySelectorAll(".delete");
-      btnsDelete.forEach((btn) => {
-        btn.addEventListener("click", (event) => {
-          deletePost(event.target.dataset.id).then(() => showPostsOnFeed());
         });
       });
 
@@ -288,6 +282,17 @@ export default () => {
         }
         cerrar.click();
       });
+
+      // ----------------ELIMINAR------------------
+
+      const btnsDelete = feedSection.querySelectorAll(".delete");
+      btnsDelete.forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+          deletePost(event.target.dataset.id).then(() => showPostsOnFeed());
+        });
+      });
+
+      
     });
   }
 
