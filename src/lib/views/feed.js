@@ -1,14 +1,11 @@
-
 import { signOutUser, auth, auth2} from "../../auth.js";
 import { subirImagenAlFirebase } from "../../storage.js";
-import { saveData, saveDataPosts, getPosts, onGetPost, getPost, updatePost, deletePost } from "./../../firestore.js";
+import { saveData, saveDataPosts, getPosts, onGetPost, getPost, updatePost, deletePost, addLike, removeLike } from "./../../firestore.js";
 
 
 export default () => {
   let editStatus = false;
   let id ='';
-  // const userDatas = dataUser().onAuthStateChanged
-  // console.log(userDatas);
   console.log('StatusEdit', editStatus);
   const feedSection = document.createElement("div");
   feedSection.classList.add("feed");
@@ -131,33 +128,23 @@ export default () => {
 
 
   function  showPostsOnFeed () {
-    // onGetPost().then((querySnapshot =>{
-    //   querySnapshot.forEach((doc=>{
-    //     console.log(doc);
-    //   }))
-    // }))
     // Guardamos los datos de los posts en una variable
     let documents = [];
     getPosts().then((querySnapshot) => {
-      // console.log(auth2.currentUser.uid);
       querySnapshot.forEach((doc) => {
         documents.push({
           data: doc.data(),
           id: doc.id,
-          uid: auth2.currentUser.uid,
-          name: auth2.currentUser.displayName,
+          uid: auth.currentUser.uid,
+          name: auth.currentUser.displayName,
         });
-        console.log(documents);
-// console.log(auth2.currentUser);
-// console.log(documents[0].data.uid);
-// console.log(auth2.currentUser.displayName);
       });
       let everyPosts = "";
       for (let i = 0; i < documents.length; i++) {
+        const idUsers = documents[i].likes ?? [];
         const idPost = documents[i].id ?? [];
         const idUser = documents[i].data.uid
-        // console.log(idUser);
-        // console.log(auth2.currentUser.uid);
+
         everyPosts =
           everyPosts +
           `<div class="post">
@@ -183,31 +170,32 @@ export default () => {
                <p class='postDescription'>${documents[i].data.description}</p>
            </div>
           <div class="postIcons">
-           <div class="like">
-            <img
-             alt="Like"
-             class="${
-               idPost.indexOf(auth2.currentUser.uid) !== 0
-                 ? "likeImg"
-                 : "unlikeImg"
-             }"
-             src="${
-               idPost.indexOf(auth2.currentUser.uid) !== 0
-                 ? "img/logoheart.png"
-                 : "img/likeGris.png"
-             }"/>
-             <h2>2 likes</h2>
-           </div>
+          <div class="like">
+          <img
+           alt="sin likes"
+           class="likesButtons ${
+             idUsers.includes(auth.currentUser.uid) ? "likeImg" : "unlikeImg"
+           }"
+
+           data-id=${documents[i].id}
+           src="${
+             idUsers.includes(auth.currentUser.uid)
+               ? "img/logoheart.png"
+               : "img/likeGris.png"
+           }"
+          />  
+          
+         <h2 class="counter">${idUsers.length} likes</h2>
+         </div>
            <div class="otherIcons">
-            <buttom><i data-id="${idPost}" class="${idUser == auth2.currentUser.uid ? "fi btn-edit fi-rr-pencil" : "" }" ></i></buttom>
-            <i class="${idUser == auth2.currentUser.uid ? "fi fi-rs-trash delete" : ""}" id="btn-delete" data-id="${idPost}"></i>
+            <buttom><i data-id="${idPost}" class="${idUser == auth.currentUser.uid ? "fi btn-edit fi-rr-pencil" : "" }" ></i></buttom>
+            <i class="${idUser == auth.currentUser.uid ? "fi fi-rs-trash delete" : ""}" id="btn-delete" data-id="${idPost}"></i>
            </div>
           </div>
       </div>`;
       }
       feedSection.querySelector(".postsContainer").innerHTML = everyPosts;
-      // postSection = everyPosts.querySelectorAll(".post")
-      // postDescription = feedSection.querySelectorAll(".postDescription")
+
 
         abrir.addEventListener("click", () => {
         console.log("click");
@@ -224,14 +212,8 @@ export default () => {
       //EDIT POSTS
       //CREAR LISTA DE BOTONES
       const buttonEdit = feedSection.querySelectorAll(".btn-edit")
-      // console.log(auth2.currentUser.uid);
       buttonEdit.forEach(btn =>{
 
-        //Por cada botón añadir un evento.. al dar click extraemos el evento
-        //al dar click traerá el evento -pointerEvent
-        // btn.addEventListener('click', ({target: {dataset}}) => {
-        //   const doc = await getPost(dataset.id)
-        //   console.log(dataset.id);
 
           btn.addEventListener('click', async e => {
             //buscar en la base de datos si existe el id para editar, alterar el post
@@ -248,12 +230,7 @@ export default () => {
           id= e.target.dataset.id
           console.log('Edit Satatus:', editStatus);
           formModal['btnUploadImage'].innerText='Update'
-          // postSection['postText'].value = post.title
-          // postSection['postDescription'].value = post.description
-          // SIN DESTRUCTURAR:
-          // console.log(e.target.dataset.id);
-          // console.log(btn.getAttribute("data-id"));
-          //LLAMAR AL ID:
+
         })
       })
       const btnsDelete = feedSection.querySelectorAll(".delete");
@@ -294,6 +271,36 @@ export default () => {
     });
 
     });
+  }
+
+  // ------------LIKE POSTS-------------
+
+  const likesButtons = feedSection.querySelectorAll(".likesButtons");
+  likesButtons.forEach((button) => {
+    console.log("hola probando")
+    button.addEventListener("click", likes);
+  });
+
+  function likes(e) {
+    const idPost = e.target.dataset.id;
+    console.log(e);
+    if (e.target.className.includes("unlikeImg")) {
+      addLike(idPost);
+      e.target.src = "img/logoheart.png";
+      e.target.classList.add("likeImg");
+      e.target.classList.remove("unlikeImg");
+      let counter = e.target.nextElementSibling;
+      const newCounter = Number(counter.innerHTML.split(" ")[0]);
+      counter.innerHTML = `${newCounter + 1} likes`;
+    } else if (e.target.className.includes("likeImg")) {
+      removeLike(idPost);
+      e.target.src = "img/likeGris.png";
+      e.target.classList.add("unlikeImg");
+      e.target.classList.remove("likeImg");
+      let counter = e.target.nextElementSibling;
+      const newCounter = Number(counter.innerHTML.split(" ")[0]);
+      counter.innerHTML = `${newCounter - 1} likes`;
+    }
   }
 
   showPostsOnFeed();

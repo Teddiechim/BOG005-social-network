@@ -7,8 +7,11 @@ import {
   getDocs,
   getDoc,
   doc,
+  arrayUnion,
+  arrayRemove,
   updateDoc,
   deleteDoc,
+  where
 } from "https://www.gstatic.com/firebasejs/9.9.4/firebase-firestore.js";
 import { auth2 } from "./auth.js";
 import { app } from "./firebase.js";
@@ -17,8 +20,7 @@ import { onAuthStateChanged, getAuth }  from 'https://www.gstatic.com/firebasejs
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// const auth = getAuth(app);
-// const user = auth.currentUser;
+
 export const currentUser = {};
 export async function saveData(email, password, name) {
   try {
@@ -34,32 +36,34 @@ export async function saveData(email, password, name) {
     console.error("Error adding document: ", e);
   }
 }
-export const googleSignIn = () => signInWithPopup(auth, provider);
-
-// export const getCurrentUser = () => {
-//   onAuthStateChanged(auth, (user) => {
-//     if (user) {
-//       currentUser.displayName = user.displayName;
-//       currentUser.email = user.email;
-//       currentUser.uid = user.uid;
-//       currentUser.photoURL = user.photoURL;
-//     }
-//   });
-// };
-
-
-
 
 export async function saveDataPosts(title, description) {
-
-    const docRef = await addDoc(collection(db, "posts"), {
+  let author;
+  if (auth.currentUser.displayName) {
+    author = auth.currentUser.displayName;
+  } else {
+    const id = auth.currentUser.uid;
+    const user = await getUser(id);
+    author = user[0].name;
+  }
+    addDoc(collection(db, "posts"), {
       title: title,
       description: description,
       date: new Date(),
-      uid: auth2.currentUser.uid,
-      name: auth2.currentUser.displayName,
-    })
+      likes: [],
+      uid: auth.currentUser.uid,
+      author: author,
+
+    });
+
 }
+
+export const googleSignIn = () => signInWithPopup(auth, provider);
+
+
+
+
+
 
 export function getPosts() {
   const q = query(collection(db, "posts"), orderBy("date", "desc"));
@@ -83,3 +87,25 @@ export const updatePost = (id, newFields) => updateDoc(doc(db, 'posts', id), new
 
 
 export const deletePost = (id) => deleteDoc(doc(db, 'posts', id))
+
+export async function addLike(postId) {
+  try {
+    const postRef = doc(db, "posts", postId);
+    await updateDoc(postRef, {
+      likes: arrayUnion(auth.currentUser.uid),
+    });
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function removeLike(postId) {
+  try {
+    const postRef = doc(db, "posts", postId);
+    await updateDoc(postRef, {
+      likes: arrayRemove(auth.currentUser.uid),
+    });
+  } catch (e) {
+    console.log(e);
+  }
+}
