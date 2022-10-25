@@ -137,15 +137,6 @@ export default () => {
   });
 
   const formModal = feedSection.querySelector(".modal-textos");
-  // formModal.addEventListener("submit", (e) => {
-  //   e.preventDefault();
-  //   console.log(e);
-  //   const formData = new FormData(e.target);
-  //   const title = formData.get("newPostTitle");
-  //   const description = formData.get("newPostText");
-  //   saveDataPosts(title, description);
-  //   cerrar.click();
-  // });
 
   function showPostsOnFeed() {
     let documents = [];
@@ -263,24 +254,7 @@ export default () => {
         });
       });
 
-      formModal.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const title = formData.get("newPostTitle");
-        const description = formData.get("newPostText");
 
-        if (editStatus) {
-          updatePost(id, {
-            title: title,
-            description: description,
-          });
-        } else {
-          saveDataPosts(title, description);
-          editStatus = false;
-        }
-        cerrar.click();
-        e.stopImmediatePropagation();
-      });
 
       // ----------------ELIMINAR------------------
 
@@ -290,13 +264,35 @@ export default () => {
           deletePost(event.target.dataset.id).then(() => showPostsOnFeed());
         });
       });
+
+      formModal.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const title = formData.get("newPostTitle");
+        const description = formData.get("newPostText");
+
+        if (!editStatus) {
+          saveDataPosts(title, description).then(() => showPostsOnFeed());
+          console.log('saved');
+
+        } else {
+          updatePost(id, {
+            title: title,
+            description: description,
+          }).then(() => showPostsOnFeed());
+          console.log('updated');
+          editStatus=false;
+        }
+
+        e.stopImmediatePropagation();
+        cerrar.click();
+      });
     });
   }
 
   showPostsOnFeed();
 
-  // const submitButton = feedSection.querySelector(".btnUploadImage");
-  // submitButton.addEventListener("click", showPostsOnFeed);
+
 
   return feedSection;
 };
