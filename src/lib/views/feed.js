@@ -137,15 +137,6 @@ export default () => {
   });
 
   const formModal = feedSection.querySelector(".modal-textos");
-  // formModal.addEventListener("submit", (e) => {
-  //   e.preventDefault();
-  //   console.log(e);
-  //   const formData = new FormData(e.target);
-  //   const title = formData.get("newPostTitle");
-  //   const description = formData.get("newPostText");
-  //   saveDataPosts(title, description);
-  //   cerrar.click();
-  // });
 
   function showPostsOnFeed() {
     let documents = [];
@@ -241,7 +232,7 @@ export default () => {
         }
       }
 
-      // ----------------EDITAR Y ELIMINAR------------------
+      // ----------------EDITAR------------------
 
       const buttonEdit = feedSection.querySelectorAll(".btn-edit");
 
@@ -262,6 +253,11 @@ export default () => {
           formModal["btnUploadImage"].innerText = "Editar";
         });
       });
+
+
+
+      // ----------------ELIMINAR------------------
+
       const btnsDelete = feedSection.querySelectorAll(".delete");
       btnsDelete.forEach((btn) => {
         btn.addEventListener("click", (event) => {
@@ -269,23 +265,26 @@ export default () => {
         });
       });
 
-      formModal.addEventListener("submit", async (e) => {
+      formModal.addEventListener("submit", (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const title = formData.get("newPostTitle");
         const description = formData.get("newPostText");
 
-        if (editStatus) {
-          await updatePost(id, {
+        if (!editStatus) {
+          saveDataPosts(title, description).then(() => showPostsOnFeed());
+          console.log('saved');
+
+        } else {
+          updatePost(id, {
             title: title,
             description: description,
-          });
-          // showPostsOnFeed();
-        } else {
-          await saveDataPosts(title, description);
-          showPostsOnFeed();
-          editStatus = false;
+          }).then(() => showPostsOnFeed());
+          console.log('updated');
+          editStatus=false;
         }
+
+        e.stopImmediatePropagation();
         cerrar.click();
       });
     });
@@ -293,8 +292,7 @@ export default () => {
 
   showPostsOnFeed();
 
-  // const submitButton = feedSection.querySelector(".btnUploadImage");
-  // submitButton.addEventListener("click", showPostsOnFeed);
+
 
   return feedSection;
 };
