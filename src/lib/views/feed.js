@@ -1,12 +1,21 @@
-import { signOutUser, auth, auth2} from "../../auth.js";
+import { signOutUser, auth, auth2 } from "../../auth.js";
 import { subirImagenAlFirebase } from "../../storage.js";
-import { saveData, saveDataPosts, getPosts, onGetPost, getPost, updatePost, deletePost, addLike, removeLike } from "./../../firestore.js";
-
+import {
+  saveData,
+  saveDataPosts,
+  getPosts,
+  onGetPost,
+  getPost,
+  updatePost,
+  deletePost,
+  addLike,
+  removeLike,
+} from "./../../firestore.js";
 
 export default () => {
   let editStatus = false;
-  let id ='';
-  console.log('StatusEdit', editStatus);
+  let id = "";
+  console.log("StatusEdit", editStatus);
   const feedSection = document.createElement("div");
   feedSection.classList.add("feed");
 
@@ -99,35 +108,31 @@ export default () => {
       </div>
     </section>
 `;
-        feedSection.innerHTML = viewFeed;
-        // MENU RESPONSIVE
-        const toggleButton = feedSection.querySelector(".toggle-button");
-        const navbarLinks = feedSection.querySelector(".navbar-links");
+  feedSection.innerHTML = viewFeed;
+  // MENU RESPONSIVE
+  const toggleButton = feedSection.querySelector(".toggle-button");
+  const navbarLinks = feedSection.querySelector(".navbar-links");
 
+  toggleButton.addEventListener("click", () => {
+    navbarLinks.classList.toggle("active");
+  });
 
-          toggleButton.addEventListener("click", () => {
-          navbarLinks.classList.toggle("active");
-        });
+  // FUNCIONALIDAD DEL MODAL PARA ABRIR Y CERRAR
+  const cerrar = feedSection.querySelector(".close");
+  const abrir = feedSection.querySelector(".cta");
+  const modal = feedSection.querySelector(".modal");
+  const modalC = feedSection.querySelector(".modal-container");
+  const formModal = feedSection.querySelector(".modal-textos");
 
-          // FUNCIONALIDAD DEL MODAL PARA ABRIR Y CERRAR
-          const cerrar = feedSection.querySelector(".close");
-          const abrir = feedSection.querySelector(".cta");
-          const modal = feedSection.querySelector(".modal");
-          const modalC = feedSection.querySelector(".modal-container");
-          const formModal = feedSection.querySelector(".modal-textos");
+  cerrar.addEventListener("click", () => {
+    modalC.style.display = "none";
+    modal.style.display = "none";
+  });
 
+  const signOutButton = feedSection.querySelector("#signOut");
+  signOutButton.addEventListener("click", signOutUser);
 
-
-          cerrar.addEventListener("click", () => {
-            modalC.style.display = "none";
-            modal.style.display = "none";
-          });
-
-          const signOutButton = feedSection.querySelector("#signOut");
-          signOutButton.addEventListener("click",  signOutUser);
-
-
-  function  showPostsOnFeed () {
+  function showPostsOnFeed() {
     // Guardamos los datos de los posts en una variable
     let documents = [];
     getPosts().then((querySnapshot) => {
@@ -143,7 +148,7 @@ export default () => {
       for (let i = 0; i < documents.length; i++) {
         const idUsers = documents[i].likes ?? [];
         const idPost = documents[i].id ?? [];
-        const idUser = documents[i].data.uid
+        const idUser = documents[i].data.uid;
 
         everyPosts =
           everyPosts +
@@ -188,100 +193,68 @@ export default () => {
          <h2 class="counter">${idUsers.length} likes</h2>
          </div>
            <div class="otherIcons">
-            <buttom><i data-id="${idPost}" class="${idUser == auth.currentUser.uid ? "fi btn-edit fi-rr-pencil" : "" }" ></i></buttom>
-            <i class="${idUser == auth.currentUser.uid ? "fi fi-rs-trash delete" : ""}" id="btn-delete" data-id="${idPost}"></i>
+            <buttom><i data-id="${idPost}" class="${
+            idUser == auth.currentUser.uid ? "fi btn-edit fi-rr-pencil" : ""
+          }" ></i></buttom>
+            <i class="${
+              idUser == auth.currentUser.uid ? "fi fi-rs-trash delete" : ""
+            }" id="btn-delete" data-id="${idPost}"></i>
            </div>
           </div>
       </div>`;
       }
       feedSection.querySelector(".postsContainer").innerHTML = everyPosts;
 
-
-        abrir.addEventListener("click", () => {
+      abrir.addEventListener("click", () => {
         console.log("click");
         modalC.style.display = "block";
         modal.style.display = "block";
-        formModal['tituloNewPost'].value ='';
-        formModal['descripcionNewPost'].value = '';
-        formModal['btnUploadImage'].innerHTML="Up";
-        editStatus=false;
-        console.log('editar:',editStatus);
-
+        formModal["tituloNewPost"].value = "";
+        formModal["descripcionNewPost"].value = "";
+        formModal["btnUploadImage"].innerHTML = "Up";
+        editStatus = false;
+        console.log("editar:", editStatus);
       });
 
       //EDIT POSTS
       //CREAR LISTA DE BOTONES
-      const buttonEdit = feedSection.querySelectorAll(".btn-edit")
-      buttonEdit.forEach(btn =>{
-
-
-          btn.addEventListener('click', async e => {
-            //buscar en la base de datos si existe el id para editar, alterar el post
-          const doc = await getPost(e.target.dataset.id)
+      const buttonEdit = feedSection.querySelectorAll(".btn-edit");
+      buttonEdit.forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          //buscar en la base de datos si existe el id para editar, alterar el post
+          const doc = await getPost(e.target.dataset.id);
           const post = doc.data();
           console.log(post);
 
           modalC.style.display = "block";
           modal.style.display = "block";
 
-          formModal['tituloNewPost'].value = post.title;
-          formModal['descripcionNewPost'].value = post.description;
+          formModal["tituloNewPost"].value = post.title;
+          formModal["descripcionNewPost"].value = post.description;
           editStatus = true;
-          id= e.target.dataset.id
-          console.log('Edit Satatus:', editStatus);
-          formModal['btnUploadImage'].innerText='Update'
-
-        })
-      })
+          id = e.target.dataset.id;
+          console.log("Edit Satatus:", editStatus);
+          formModal["btnUploadImage"].innerText = "Update";
+        });
+      });
       const btnsDelete = feedSection.querySelectorAll(".delete");
-        btnsDelete.forEach (btn => {
-        btn.addEventListener('click', event => {
-          deletePost(event.target.dataset.id).then(() => location.reload())
-         })
-         })
+      btnsDelete.forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+          deletePost(event.target.dataset.id).then(() => location.reload());
+        });
+      });
 
-
-  window.onload = imageUp;
-  //Boton subir archivo
-  function imageUp() {
-    const inputUp = feedSection.querySelector("#fichero");
-    inputUp.addEventListener("change", subirImagenAlFirebase, false);
-    storageRef = firebase.storage().ref();
-  }
-
-
-  formModal.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const title = formData.get("newPostTitle");
-    const description = formData.get("newPostText");
-
-    if (editStatus) {
-      updatePost(id, {
-        title: title,
-        description:description,
-      })
-    }else{
-      debugger;
-      saveDataPosts (title, description);
-      editStatus = false;
-    }
-    cerrar.click();
-    e.stopImmediatePropagation();
-    });
-
-    });
-  }
-
-  // ------------LIKE POSTS-------------
+      //Like posts
+        // ------------LIKE POSTS-------------
 
   const likesButtons = feedSection.querySelectorAll(".likesButtons");
+
   likesButtons.forEach((button) => {
-    console.log("hola probando")
-    button.addEventListener("click", likes);
+      button.addEventListener("click", likes)
   });
 
   function likes(e) {
+    console.log('evento: ', e.target);
     const idPost = e.target.dataset.id;
     console.log(e);
     if (e.target.className.includes("unlikeImg")) {
@@ -302,6 +275,39 @@ export default () => {
       counter.innerHTML = `${newCounter - 1} likes`;
     }
   }
+
+      window.onload = imageUp;
+      //Boton subir archivo
+      function imageUp() {
+        const inputUp = feedSection.querySelector("#fichero");
+        inputUp.addEventListener("change", subirImagenAlFirebase, false);
+        storageRef = firebase.storage().ref();
+      }
+
+      formModal.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const title = formData.get("newPostTitle");
+        const description = formData.get("newPostText");
+
+        if (editStatus) {
+          updatePost(id, {
+            title: title,
+            description: description,
+          });
+          editStatus = false;
+        } else {
+
+          saveDataPosts(title, description);
+
+        }
+        cerrar.click();
+        e.stopImmediatePropagation();
+      });
+    });
+  }
+
+
 
   showPostsOnFeed();
   // Ponemos un evento al botón de "subir archivo"
