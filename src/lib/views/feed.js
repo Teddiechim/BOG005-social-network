@@ -285,11 +285,13 @@ export default () => {
         description:description,
       })
     }else{
-      saveDataPosts(title, description);
+      debugger;
+      saveDataPosts (title, description);
       editStatus = false;
     }
     cerrar.click();
-  });
+    e.stopImmediatePropagation();
+    });
 
     });
   }
