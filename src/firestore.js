@@ -41,22 +41,24 @@ export async function saveData(email, password, name) {
 }
 
 export async function saveDataPosts(title, description) {
-  let author;
-  if (auth.currentUser.displayName) {
-    author = auth.currentUser.displayName;
-  } else {
-    const id = auth.currentUser.uid;
-    const user = await getUser(id);
-    author = user[0].name;
+  // let author;
+  // if (auth.currentUser.displayName) {
+  //   author = auth.currentUser.displayName;
+  //   console.log('if');
+  // } else {
+  //   console.log('else');
+  //   const id = auth.currentUser.uid;
+  //   const user = await getUser(id);
+  //   author = user[0].name;
 
-  }
+  // }
     addDoc(collection(db, "posts"), {
       title: title,
       description: description,
       date: new Date(),
       likes: [],
       uid: auth.currentUser.uid,
-      author: author,
+      author:auth.currentUser.displayName,
 
     });
 
@@ -64,10 +66,15 @@ export async function saveDataPosts(title, description) {
 
 }
 
-export function getPosts() {
-  const q = query(collection(db, "posts"), orderBy("date", "desc"));
-  return getDocs(q);
-}
+// export function getPosts() {
+//   const q = query(collection(db, "posts"), orderBy("date", "desc"));
+//   return getDocs(q);
+// }
+
+ const q = query(collection(db, "posts"), orderBy("date", "desc"));
+ export function getPosts(callback){
+  return onSnapshot(q, callback)
+ }
 
 export async function getUser(id) {
   const q = query(collection(db, "usuarios"), where("id", "==", id));
