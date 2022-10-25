@@ -1,10 +1,8 @@
 import { signOutUser, auth, auth2 } from "../../auth.js";
-import { subirImagenAlFirebase } from "../../storage.js";
 import {
   saveData,
   saveDataPosts,
   getPosts,
-  onGetPost,
   getPost,
   updatePost,
   deletePost,
@@ -13,9 +11,7 @@ import {
 } from "./../../firestore.js";
 
 export default () => {
-  let editStatus = false;
-  let id = "";
-  console.log("StatusEdit", editStatus);
+
   const feedSection = document.createElement("div");
   feedSection.classList.add("feed");
 
@@ -109,6 +105,17 @@ export default () => {
     </section>
 `;
   feedSection.innerHTML = viewFeed;
+
+    // FUNCIONALIDAD DEL MODAL PARA ABRIR Y CERRAR
+    const cerrar = feedSection.querySelector(".close");
+    const abrir = feedSection.querySelector(".cta");
+    const modal = feedSection.querySelector(".modal");
+    const modalC = feedSection.querySelector(".modal-container");
+    const formModal = feedSection.querySelector(".modal-textos");
+    const signOutButton = feedSection.querySelector("#signOut");
+    let editStatus = false;
+    let id = "";
+
   // MENU RESPONSIVE
   const toggleButton = feedSection.querySelector(".toggle-button");
   const navbarLinks = feedSection.querySelector(".navbar-links");
@@ -117,19 +124,22 @@ export default () => {
     navbarLinks.classList.toggle("active");
   });
 
-  // FUNCIONALIDAD DEL MODAL PARA ABRIR Y CERRAR
-  const cerrar = feedSection.querySelector(".close");
-  const abrir = feedSection.querySelector(".cta");
-  const modal = feedSection.querySelector(".modal");
-  const modalC = feedSection.querySelector(".modal-container");
-  const formModal = feedSection.querySelector(".modal-textos");
-
   cerrar.addEventListener("click", () => {
     modalC.style.display = "none";
     modal.style.display = "none";
   });
 
-  const signOutButton = feedSection.querySelector("#signOut");
+  abrir.addEventListener("click", () => {
+    console.log("click");
+    modalC.style.display = "block";
+    modal.style.display = "block";
+    formModal["tituloNewPost"].value = "";
+    formModal["descripcionNewPost"].value = "";
+    formModal["btnUploadImage"].innerHTML = "Up";
+    editStatus = false;
+    console.log("editar:", editStatus);
+  });
+
   signOutButton.addEventListener("click", signOutUser);
 
   function showPostsOnFeed() {
@@ -205,17 +215,6 @@ export default () => {
       }
       feedSection.querySelector(".postsContainer").innerHTML = everyPosts;
 
-      abrir.addEventListener("click", () => {
-        console.log("click");
-        modalC.style.display = "block";
-        modal.style.display = "block";
-        formModal["tituloNewPost"].value = "";
-        formModal["descripcionNewPost"].value = "";
-        formModal["btnUploadImage"].innerHTML = "Up";
-        editStatus = false;
-        console.log("editar:", editStatus);
-      });
-
       //EDIT POSTS
       //CREAR LISTA DE BOTONES
       const buttonEdit = feedSection.querySelectorAll(".btn-edit");
@@ -240,11 +239,11 @@ export default () => {
       const btnsDelete = feedSection.querySelectorAll(".delete");
       btnsDelete.forEach((btn) => {
         btn.addEventListener("click", (event) => {
-          deletePost(event.target.dataset.id).then(() => location.reload());
+          deletePost(event.target.dataset.id).then(() =>  showPostsOnFeed());
         });
       });
 
-      //Like posts
+
         // ------------LIKE POSTS-------------
 
   const likesButtons = feedSection.querySelectorAll(".likesButtons");
@@ -276,13 +275,6 @@ export default () => {
     }
   }
 
-      window.onload = imageUp;
-      //Boton subir archivo
-      function imageUp() {
-        const inputUp = feedSection.querySelector("#fichero");
-        inputUp.addEventListener("change", subirImagenAlFirebase, false);
-        storageRef = firebase.storage().ref();
-      }
 
       formModal.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -307,10 +299,8 @@ export default () => {
     });
   }
 
-
-
   showPostsOnFeed();
-  // Ponemos un evento al botón de "subir archivo"
+
   const submitButton = feedSection.querySelector(".btnUploadImage");
   submitButton.addEventListener("click", showPostsOnFeed);
 
