@@ -263,24 +263,23 @@ export default () => {
         });
       });
 
-      formModal.addEventListener("submit", async (e) => {
+      formModal.addEventListener("submit", (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const title = formData.get("newPostTitle");
         const description = formData.get("newPostText");
 
         if (editStatus) {
-          await updatePost(id, {
+          updatePost(id, {
             title: title,
             description: description,
           });
-          // showPostsOnFeed();
         } else {
-          await saveDataPosts(title, description);
-          showPostsOnFeed();
+          saveDataPosts(title, description);
           editStatus = false;
         }
         cerrar.click();
+        e.stopImmediatePropagation();
       });
 
       // ----------------ELIMINAR------------------
@@ -291,8 +290,6 @@ export default () => {
           deletePost(event.target.dataset.id).then(() => showPostsOnFeed());
         });
       });
-
-      
     });
   }
 
